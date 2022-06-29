@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { connectRange } from 'react-instantsearch-dom';
 import { Form, Button } from 'react-bootstrap';
 import useSearch from '../useSearch';
+import '@internetarchive/histogram-date-range';
 
 const formatDate = (epoch) => new Date(epoch * 1000).toISOString().substr(0, 10);
 
@@ -34,6 +35,26 @@ const RangeInput = ({ min, max, currentRefinement, refine, attribute }) => {
   return (
     <>
       <Form className="px-3">
+        <div
+          className="mt-2 mb-3"
+          style={{ height: '50px', overflow: 'hidden', display: 'flex', justifyContent: 'center' }}
+        >
+          <histogram-date-range
+            width="250"
+            height="50"
+            tooltipWidth="140"
+            dateFormat="DD MMM YYYY"
+            style={{
+              '--histogramDateRangeTooltipFontSize': '1rem',
+              '--histogramDateRangeInputWidth': '85px',
+            }}
+            minDate={String(new Date(min * 1000).getFullYear())}
+            maxDate={String(new Date(max * 1000).getFullYear())}
+            minSelectedDate={String(new Date(currentRefinement.min * 1000).getFullYear())}
+            maxSelectedDate={String(new Date(currentRefinement.max * 1000).getFullYear())}
+            bins="[ 74, 67, 17, 66, 49, 93, 47, 61, 32, 46, 53, 2, 13, 45, 28, 1, 8, 70, 37, 74, 67, 17, 66, 49, 93, 47, 61, 70, 37, 74, 67, 17, 66, 49, 93, 47, 61, 32, 32, 70, 37, 74, 67, 17, 66, 49, 93, 47, 61, 32 ]"
+          ></histogram-date-range>
+        </div>
         <Form.Label>From Date:</Form.Label>
         <Form.Control
           required={true}

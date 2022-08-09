@@ -87,6 +87,7 @@ const SubmitForm = () => {
   };
 
   const handleSubmit = async (values, { resetForm }) => {
+    console.log('values', values);
     try {
       const date_submitted = format(new Date(), 'yyyy-MM-dd');
 
@@ -103,6 +104,7 @@ const SubmitForm = () => {
             : values.submitters
           : ['Anonymous'],
         plain_text: await stripMarkdown(values.text),
+        embedding: values.embedding || undefined,
       };
 
       await insertSubmission({ variables: { submission } });
@@ -119,6 +121,7 @@ const SubmitForm = () => {
         severity: SEVERITY.success,
       });
     } catch (e) {
+      console.error(e);
       addToast({
         message: (
           <Trans i18n={i18n} ns="submit">

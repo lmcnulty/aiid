@@ -139,7 +139,6 @@ function IncidentForm() {
         <Form.Label>Editors</Form.Label>
         <TagsControl name="editors" />
       </Form.Group>
-
       <div id="similar-incidents">
         <RelatedIncidentsArea
           columnKey={'editor_similar_incidents'}

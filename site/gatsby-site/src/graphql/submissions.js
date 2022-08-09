@@ -63,6 +63,10 @@ export const FIND_SUBMISSION = gql`
       url
       editor_notes
       tags
+      embedding {
+        vector
+        from_text_hash
+      }
       nlp_similar_incidents {
         similarity
         incident_id
@@ -95,6 +99,10 @@ export const UPDATE_SUBMISSION = gql`
       url
       editor_notes
       tags
+      embedding {
+        vector
+        from_text_hash
+      }
       nlp_similar_incidents {
         similarity
         incident_id

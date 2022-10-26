@@ -35,8 +35,10 @@ const LandingPage = (props) => {
   if (latestReport.language !== language) {
     const translation = data[`latestReport_${language}`];
 
-    latestReport.title = translation.title;
-    latestReport.text = translation.text;
+    if (translation) {
+      latestReport.title = translation.title;
+      latestReport.text = translation.text;
+    }
   }
 
   const { t } = useTranslation(['translation', 'landing']);

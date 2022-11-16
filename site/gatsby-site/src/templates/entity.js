@@ -76,7 +76,9 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   return (
     <Layout {...props}>
       <h3>
-        <Link to="/entities">Entities</Link>
+        <Link to="/entities">
+          <Trans ns="entities">Entities</Trans>
+        </Link>
       </h3>
       <h1>{name}</h1>
 

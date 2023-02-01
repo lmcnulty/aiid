@@ -397,20 +397,18 @@ function CitePage(props) {
             {taxonomies.length > 0 && (
               <Row id="taxa-area">
                 <Col>
-                  {taxonomiesList
-                    .filter((t) => t.canEdit || t.classificationsArray.length > 0)
-                    .map((t) => (
-                      <Taxonomy
-                        key={t.namespace}
-                        taxonomy={t}
-                        incidentId={incident.incident_id}
-                        canEdit={t.canEdit}
-                        {...{
-                          taxonomyBeingEdited,
-                          setTaxonomyBeingEdited,
-                        }}
-                      />
-                    ))}
+                  {taxonomiesList.map((t) => (
+                    <Taxonomy
+                      key={t.namespace}
+                      taxonomy={t}
+                      incidentId={incident.incident_id}
+                      canEdit={t.canEdit}
+                      {...{
+                        taxonomyBeingEdited,
+                        setTaxonomyBeingEdited,
+                      }}
+                    />
+                  ))}
                 </Col>
               </Row>
             )}

@@ -1,2 +1,0 @@
-describe('Submitter Selection', () => {
-});

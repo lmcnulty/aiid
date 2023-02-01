@@ -66,8 +66,7 @@ function CitePage(props) {
     },
     data: {
       allMongodbAiidprodTaxa,
-      mongodbAiidprodClassifications,
-      mongodbAiidprodResources,
+      allMongodbAiidprodClassifications,
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
@@ -139,8 +138,7 @@ function CitePage(props) {
     () =>
       getTaxonomies({
         allMongodbAiidprodTaxa,
-        mongodbAiidprodClassifications,
-        mongodbAiidprodResources,
+        allMongodbAiidprodClassifications,
       }),
     []
   );
@@ -148,6 +146,8 @@ function CitePage(props) {
   const [taxonomiesList, setTaxonomiesList] = useState(
     taxonomies.map((t) => ({ ...t, canEdit: false }))
   );
+
+  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState();
 
   useEffect(() => {
     setTaxonomiesList((list) =>
@@ -408,6 +408,10 @@ function CitePage(props) {
                         taxonomy={t}
                         incidentId={incident.incident_id}
                         canEdit={t.canEdit}
+                        {...{
+                          taxonomyBeingEdited,
+                          setTaxonomyBeingEdited,
+                        }}
                       />
                     ))}
                 </Col>
@@ -492,60 +496,16 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
-    mongodbAiidprodResources(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      id
-      incident_id
-      notes
-      classifications {
-        Datasheets_for_Datasets
-        Publish
-      }
-    }
-    mongodbAiidprodClassifications(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      incident_id
-      id
-      namespace
-      notes
-      classifications {
-        Annotation_Status
-        Annotator
-        Ending_Date
-        Beginning_Date
-        Full_Description
-        Intent
-        Location
-        Named_Entities
-        Near_Miss
-        Quality_Control
-        Reviewer
-        Severity
-        Short_Description
-        Technology_Purveyor
-        AI_Applications
-        AI_System_Description
-        AI_Techniques
-        Data_Inputs
-        Financial_Cost
-        Harm_Distribution_Basis
-        Harm_Type
-        Infrastructure_Sectors
-        Laws_Implicated
-        Level_of_Autonomy
-        Lives_Lost
-        Nature_of_End_User
-        Physical_System
-        Problem_Nature
-        Public_Sector_Deployment
-        Relevant_AI_functions
-        Sector_of_Deployment
-        System_Developer
-        Publish
+    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
+      nodes {
+        incident_id
+        id
+        namespace
+        notes
+        attributes {
+          short_name
+          value_json
+        }
       }
     }
     allMongodbAiidprodTaxa {
@@ -555,14 +515,19 @@ export const query = graphql`
         weight
         description
         field_list {
-          public
-          display_type
-          long_name
           short_name
-          long_description
-          weight
+          long_name
           short_description
-          render_as
+          long_description
+          display_type
+          mongo_type
+          default
+          placeholder
+          permitted_values
+          weight
+          instant_facet
+          required
+          public
         }
       }
     }

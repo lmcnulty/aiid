@@ -14,6 +14,7 @@ import Link from 'components/ui/Link';
 import LocationMap from 'components/visualizations/LocationMap';
 import { Card, Badge } from 'flowbite-react';
 import AiidHelmet from 'components/AiidHelmet';
+import { getClassificationValue } from 'utils/classifications';
 
 const Description = styled(Markdown)`
   h1 {
@@ -176,7 +177,7 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const value = c.classifications[field.short_name.split(' ').join('_')];
+        const value = getClassificationValue(c, field.short_name);
 
         if (value?.length > 0) {
           if (typeof value === 'object') {
@@ -205,7 +206,7 @@ const getStats = (taxa, classification) => {
       let auxStat = {};
 
       filteredClassification.forEach((c) => {
-        const value = c.classifications[field.short_name.split(' ').join('_')];
+        const value = getClassificationValue(c, field.short_name);
 
         if ((value || typeof value === 'boolean') && value !== '') {
           if (typeof value === 'boolean') {
@@ -246,9 +247,9 @@ const getGeocodes = (classifications) => {
   const map = {};
 
   classifications.forEach((c) => {
-    const { Location } = c.classifications;
+    const Location = getClassificationValue(c, 'Location', { spaceToUnderScore: true });
 
-    if (!(Location in map)) {
+    if (Location && !(Location in map)) {
       map[Location] = c.fields ? c.fields.geocode : {};
     }
   });
@@ -330,13 +331,25 @@ export default Taxonomy;
 export const pageQuery = graphql`
   query ($namespace: String!) {
     allMongodbAiidprodClassifications(
-      filter: {
-        namespace: { eq: $namespace }
-        incident_id: { lt: 1000 }
-        classifications: { Publish: { eq: true } }
-      }
+      filter: { namespace: { eq: $namespace }, incident_id: { lt: 1000 } }
     ) {
-      ...ClassificationFields
+      nodes {
+        namespace
+        attributes {
+          short_name
+          value_json
+        }
+        fields {
+          geocode {
+            geometry {
+              location {
+                lat
+                lng
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;

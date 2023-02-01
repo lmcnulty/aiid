@@ -52,21 +52,6 @@ export default function Taxonomies({ data, ...props }) {
         </ul>
 
         <h2>
-          <Trans>In-Development Taxonomies</Trans>
-        </h2>
-        <ul>
-          <li className="list-none">
-            <p>
-              <Trans>
-                <LocalizedLink to="/taxonomy/resources">Resources</LocalizedLink>. This is a
-                taxonomy that will associate incidents with resources that help understand,
-                mitigate, and prevent incidents from recurring in the future.
-              </Trans>
-            </p>
-          </li>
-        </ul>
-
-        <h2>
           <Trans>About Taxonomies</Trans>
         </h2>
         <p>
@@ -97,24 +82,9 @@ export const pageQuery = graphql`
       nodes {
         incident_id
         namespace
-        classifications {
-          Annotator
-          Annotation_Status
-          Reviewer
-          Quality_Control
-          Full_Description
-          Short_Description
-          Beginning_Date
-          Ending_Date
-          Location
-          Near_Miss
-          Intent
-          Severity
-          Publish
-          Harm_Distribution_Basis
-          Harm_Type
-          System_Developer
-          Severity
+        attributes {
+          short_name
+          value_json
         }
       }
     }

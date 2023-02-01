@@ -141,7 +141,7 @@ function CitePage(props) {
   );
 
   const [taxonomiesList, setTaxonomiesList] = useState(
-    taxonomies.map((t) => ({ ...t, canEdit: false }))
+    taxonomies.map((t) => ({ ...t, canEdit: true }))
   );
 
   const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState();
@@ -150,8 +150,8 @@ function CitePage(props) {
     setTaxonomiesList((list) =>
       list.map((t) => ({
         ...t,
-        canEdit:
-          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
+        canEdit: true,
+        //isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
       }))
     );
   }, [user]);

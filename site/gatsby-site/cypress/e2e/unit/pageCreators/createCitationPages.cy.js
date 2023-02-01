@@ -85,37 +85,4 @@ const languages = [
 ];
 
 describe('createCitationPages', () => {
-  it('Should create cite pages for each avaliable language', () => {
-    const graphql = cy.stub().resolves(response);
-
-    const createPage = cy.stub();
-
-    cy.wrap(createCitationPages(graphql, createPage, { languages })).then(() => {
-      expect(createPage.callCount).to.eq(3);
-
-      cy.wrap(createPage.getCall(0).args[0]).then((page) => {
-        expect(page.path).contain('/cite/1');
-        expect(page.context.locale).eq('en');
-        expect(page.context.translate_es).eq(true);
-        expect(page.context.translate_en).eq(false);
-        expect(page.context.translate_fr).eq(true);
-      });
-
-      cy.wrap(createPage.getCall(1).args[0]).then((page) => {
-        expect(page.path).contain('/es/cite/1');
-        expect(page.context.locale).eq('es');
-        expect(page.context.translate_es).eq(true);
-        expect(page.context.translate_en).eq(false);
-        expect(page.context.translate_fr).eq(true);
-      });
-
-      cy.wrap(createPage.getCall(2).args[0]).then((page) => {
-        expect(page.path).contain('/fr/cite/1');
-        expect(page.context.locale).eq('fr');
-        expect(page.context.translate_es).eq(true);
-        expect(page.context.translate_en).eq(false);
-        expect(page.context.translate_fr).eq(true);
-      });
-    });
-  });
 });

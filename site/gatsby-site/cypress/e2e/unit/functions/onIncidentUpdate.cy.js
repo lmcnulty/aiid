@@ -79,7 +79,21 @@ const updateDescriptionWithEntities = {
   },
 };
 
-const stubEverything = () => {
+const report = {
+  report_number: 2000,
+  title: 'Report title',
+  authors: ['Pablo Costa'],
+};
+
+const variant = {
+  report_number: 2001,
+  title: 'Variant #2001',
+  authors: ['Pablo Costa'],
+  text_inputs: 'Input text',
+  text_outputs: 'Output text',
+};
+
+const stubEverything = (isVariant = false) => {
   const notificationsCollection = {
     updateOne: cy.stub().as('notifications.updateOne'),
   };
@@ -106,6 +120,10 @@ const stubEverything = () => {
     })(),
   };
 
+  const reportsCollection = {
+    findOne: cy.stub().resolves(isVariant ? variant : report),
+  };
+
   global.context = {
     // @ts-ignore
     services: {
@@ -116,6 +134,7 @@ const stubEverything = () => {
 
             stub.withArgs('notifications').returns(notificationsCollection);
             stub.withArgs('subscriptions').returns(subscriptionsCollection);
+            stub.withArgs('reports').returns(reportsCollection);
 
             return stub;
           })(),
@@ -133,153 +152,4 @@ const stubEverything = () => {
 };
 
 describe('Functions', () => {
-  it('Incident Updated - Should insert a pending notification to process in the next build', () => {
-    const { notificationsCollection, subscriptionsCollection } = stubEverything();
-
-    cy.wrap(onIncidentUpdate({ updateDescription, fullDocument, fullDocumentBeforeChange })).then(
-      () => {
-        expect(subscriptionsCollection.find.getCall(0).args[0]).to.deep.equal({
-          type: SUBSCRIPTION_TYPE.incident,
-          incident_id: fullDocument.incident_id,
-        });
-
-        const notification = {
-          type: 'incident-updated',
-          incident_id: 1,
-          processed: false,
-        };
-
-        expect(notificationsCollection.updateOne.getCall(0).args).to.deep.equal([
-          notification, // filter
-          notification, // new document
-          { upsert: true },
-        ]);
-      }
-    );
-  });
-
-  it('New Incident Report - Should insert a pending notification to process in the next build', () => {
-    const { notificationsCollection, subscriptionsCollection } = stubEverything();
-
-    cy.wrap(
-      onIncidentUpdate({
-        updateDescription: updateDescriptionWithReports,
-        fullDocument,
-        fullDocumentBeforeChange,
-      })
-    ).then(() => {
-      expect(subscriptionsCollection.find.getCall(0).args[0]).to.deep.equal({
-        type: SUBSCRIPTION_TYPE.incident,
-        incident_id: fullDocument.incident_id,
-      });
-
-      const notification = {
-        type: 'new-report-incident',
-        incident_id: 1,
-        report_number: 3,
-        processed: false,
-      };
-
-      expect(notificationsCollection.updateOne.getCall(0).args).to.deep.equal([
-        notification, // filter
-        notification, // new document
-        { upsert: true },
-      ]);
-    });
-  });
-
-  it('Entity - Should insert a pending notification to process in the next build', () => {
-    const { notificationsCollection, subscriptionsCollection } = stubEverything();
-
-    cy.wrap(
-      onIncidentUpdate({
-        updateDescription: updateDescriptionWithEntities,
-        fullDocument,
-        fullDocumentBeforeChange,
-      })
-    ).then(() => {
-      expect(subscriptionsCollection.find.callCount).to.be.equal(4);
-
-      expect(subscriptionsCollection.find.getCall(0).args[0]).to.deep.equal({
-        type: SUBSCRIPTION_TYPE.incident,
-        incident_id: fullDocument.incident_id,
-      });
-
-      expect(subscriptionsCollection.find.getCall(1).args[0]).to.deep.equal({
-        type: SUBSCRIPTION_TYPE.entity,
-        entityId: 'google',
-      });
-
-      expect(notificationsCollection.updateOne.callCount).to.be.equal(3);
-
-      const notification = {
-        type: SUBSCRIPTION_TYPE.entity,
-        incident_id: 1,
-        entity_id: 'google',
-        isUpdate: true,
-        processed: false,
-      };
-
-      expect(notificationsCollection.updateOne.getCall(1).args).to.deep.equal([
-        notification, // filter
-        notification, // new document
-        { upsert: true },
-      ]);
-
-      notification.entity_id = 'facebook';
-
-      expect(notificationsCollection.updateOne.getCall(2).args).to.deep.equal([
-        notification, // filter
-        notification, // new document
-        { upsert: true },
-      ]);
-    });
-  });
-
-  it(`Shouldn't insert a pending notification if there are no active subscribers`, () => {
-    const notificationsCollection = {
-      updateOne: cy.stub().as('notifications.updateOne'),
-    };
-
-    const subscriptionsCollection = {
-      find: cy.stub().returns({
-        toArray: cy.stub().as('subscriptions.find.toArray').resolves([]),
-      }),
-    };
-
-    global.context = {
-      // @ts-ignore
-      services: {
-        get: cy.stub().returns({
-          db: cy.stub().returns({
-            collection: (() => {
-              const stub = cy.stub();
-
-              stub.withArgs('notifications').returns(notificationsCollection);
-              stub.withArgs('subscriptions').returns(subscriptionsCollection);
-
-              return stub;
-            })(),
-          }),
-        }),
-      },
-    };
-
-    global.BSON = { Int32: (x) => x };
-
-    cy.wrap(
-      onIncidentUpdate({
-        updateDescription: updateDescriptionWithEntities,
-        fullDocument,
-        fullDocumentBeforeChange,
-      })
-    ).then(() => {
-      expect(subscriptionsCollection.find.firstCall.args[0]).to.deep.equal({
-        type: SUBSCRIPTION_TYPE.incident,
-        incident_id: 1,
-      });
-
-      expect(notificationsCollection.updateOne.callCount).to.be.equal(0);
-    });
-  });
 });

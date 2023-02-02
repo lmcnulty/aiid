@@ -6,7 +6,7 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   if (!classifications) {
     return [];
   }
-  const classificationObj = classifications.classifications;
+  const attributes = classifications.attributes;
 
   const taxaFieldsArray = taxonomy.field_list.sort((a, b) => b.weight - a.weight);
 
@@ -30,9 +30,11 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   };
 
   taxaFieldsArray.forEach((field) => {
-    const c = classificationObj[field.short_name.split(' ').join('_')];
+    const attribute = attributes && attributes.find((a) => a.short_name == field.short_name);
 
-    const value = getStringForValue(c);
+    const attributeValue = attribute?.value_json && JSON.parse(attribute.value_json);
+
+    const value = getStringForValue(attributeValue);
 
     if (field.public !== false && value !== undefined && value !== '' && value.length > 0) {
       array.push({
@@ -49,20 +51,8 @@ export const getClassificationsArray = (incidentClassifications, taxonomy) => {
   return array;
 };
 
-export const getTaxonomies = ({
-  mongodbAiidprodClassifications,
-  mongodbAiidprodResources,
-  allMongodbAiidprodTaxa,
-}) => {
-  if (mongodbAiidprodClassifications) {
-    mongodbAiidprodClassifications.namespace = 'CSET';
-  }
-
-  if (mongodbAiidprodResources) {
-    mongodbAiidprodResources.namespace = 'resources';
-  }
-
-  const incidentClassifications = [mongodbAiidprodClassifications, mongodbAiidprodResources];
+export const getTaxonomies = ({ allMongodbAiidprodClassifications, allMongodbAiidprodTaxa }) => {
+  const incidentClassifications = allMongodbAiidprodClassifications.nodes;
 
   const taxonomies = [];
 

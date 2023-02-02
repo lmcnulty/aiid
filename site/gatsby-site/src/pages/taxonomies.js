@@ -17,11 +17,9 @@ export default function Taxonomies({ data, ...props }) {
 
   const metaDescription = t('This is the list of taxonomies supported in AIID');
 
-  const canonicalUrl = '/taxonomies';
-
   return (
     <Layout {...props}>
-      <AiidHelmet {...{ title, metaTitle, metaDescription, canonicalUrl }}>
+      <AiidHelmet {...{ title, metaTitle, metaDescription, path: props.location.pathname }}>
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
@@ -48,21 +46,6 @@ export default function Taxonomies({ data, ...props }) {
               namespace="CSET"
               axes={['Harm Distribution Basis', 'Harm Type', 'System Developer', 'Severity']}
             />
-          </li>
-        </ul>
-
-        <h2>
-          <Trans>In-Development Taxonomies</Trans>
-        </h2>
-        <ul>
-          <li className="list-none">
-            <p>
-              <Trans>
-                <LocalizedLink to="/taxonomy/resources">Resources</LocalizedLink>. This is a
-                taxonomy that will associate incidents with resources that help understand,
-                mitigate, and prevent incidents from recurring in the future.
-              </Trans>
-            </p>
           </li>
         </ul>
 
@@ -97,24 +80,9 @@ export const pageQuery = graphql`
       nodes {
         incident_id
         namespace
-        classifications {
-          Annotator
-          Annotation_Status
-          Reviewer
-          Quality_Control
-          Full_Description
-          Short_Description
-          Beginning_Date
-          Ending_Date
-          Location
-          Near_Miss
-          Intent
-          Severity
-          Publish
-          Harm_Distribution_Basis
-          Harm_Type
-          System_Developer
-          Severity
+        attributes {
+          short_name
+          value_json
         }
       }
     }

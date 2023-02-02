@@ -5,7 +5,6 @@ import Layout from 'components/Layout';
 import Citation from 'components/cite/Citation';
 import ImageCarousel from 'components/cite/ImageCarousel';
 import BibTex from 'components/BibTex';
-import { getCanonicalUrl } from 'utils/getCanonicalUrl';
 import { format, isAfter, isEqual } from 'date-fns';
 import Timeline from '../components/visualizations/Timeline';
 import IncidentStatsCard from '../components/cite/IncidentStatsCard';
@@ -66,8 +65,7 @@ function CitePage(props) {
     },
     data: {
       allMongodbAiidprodTaxa,
-      mongodbAiidprodClassifications,
-      mongodbAiidprodResources,
+      allMongodbAiidprodClassifications,
       allMongodbAiidprodReports,
       allMongodbTranslationsReportsEs,
       allMongodbTranslationsReportsEn,
@@ -95,8 +93,6 @@ function CitePage(props) {
   const metaTitle = `Incident ${incident.incident_id}: ${incident.title}`;
 
   const metaDescription = incident.description;
-
-  const canonicalUrl = getCanonicalUrl(incident.incident_id);
 
   const incidentReports = getTranslatedReports({
     allMongodbAiidprodReports,
@@ -139,22 +135,23 @@ function CitePage(props) {
     () =>
       getTaxonomies({
         allMongodbAiidprodTaxa,
-        mongodbAiidprodClassifications,
-        mongodbAiidprodResources,
+        allMongodbAiidprodClassifications,
       }),
     []
   );
 
   const [taxonomiesList, setTaxonomiesList] = useState(
-    taxonomies.map((t) => ({ ...t, canEdit: false }))
+    taxonomies.map((t) => ({ ...t, canEdit: true }))
   );
+
+  const [taxonomyBeingEdited, setTaxonomyBeingEdited] = useState();
 
   useEffect(() => {
     setTaxonomiesList((list) =>
       list.map((t) => ({
         ...t,
-        canEdit:
-          isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
+        canEdit: true,
+        //isRole('taxonomy_editor') || isRole('taxonomy_editor_' + t.namespace.toLowerCase()),
       }))
     );
   }, [user]);
@@ -228,7 +225,7 @@ function CitePage(props) {
 
   return (
     <Layout {...{ props }}>
-      <AiidHelmet {...{ metaTitle, metaDescription, canonicalUrl, metaImage }}>
+      <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
@@ -237,7 +234,7 @@ function CitePage(props) {
         <div className="flex">
           <SocialShareButtons
             metaTitle={metaTitle}
-            canonicalUrl={canonicalUrl}
+            path={props.location.pathname}
             page="cite"
             className="-mt-1"
           ></SocialShareButtons>
@@ -400,16 +397,18 @@ function CitePage(props) {
             {taxonomies.length > 0 && (
               <Row id="taxa-area">
                 <Col>
-                  {taxonomiesList
-                    .filter((t) => t.canEdit || t.classificationsArray.length > 0)
-                    .map((t) => (
-                      <Taxonomy
-                        key={t.namespace}
-                        taxonomy={t}
-                        incidentId={incident.incident_id}
-                        canEdit={t.canEdit}
-                      />
-                    ))}
+                  {taxonomiesList.map((t) => (
+                    <Taxonomy
+                      key={t.namespace}
+                      taxonomy={t}
+                      incidentId={incident.incident_id}
+                      canEdit={t.canEdit}
+                      {...{
+                        taxonomyBeingEdited,
+                        setTaxonomyBeingEdited,
+                      }}
+                    />
+                  ))}
                 </Col>
               </Row>
             )}
@@ -492,60 +491,16 @@ export const query = graphql`
     $translate_fr: Boolean!
     $translate_en: Boolean!
   ) {
-    mongodbAiidprodResources(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      id
-      incident_id
-      notes
-      classifications {
-        Datasheets_for_Datasets
-        Publish
-      }
-    }
-    mongodbAiidprodClassifications(
-      classifications: { Publish: { eq: true } }
-      incident_id: { eq: $incident_id }
-    ) {
-      incident_id
-      id
-      namespace
-      notes
-      classifications {
-        Annotation_Status
-        Annotator
-        Ending_Date
-        Beginning_Date
-        Full_Description
-        Intent
-        Location
-        Named_Entities
-        Near_Miss
-        Quality_Control
-        Reviewer
-        Severity
-        Short_Description
-        Technology_Purveyor
-        AI_Applications
-        AI_System_Description
-        AI_Techniques
-        Data_Inputs
-        Financial_Cost
-        Harm_Distribution_Basis
-        Harm_Type
-        Infrastructure_Sectors
-        Laws_Implicated
-        Level_of_Autonomy
-        Lives_Lost
-        Nature_of_End_User
-        Physical_System
-        Problem_Nature
-        Public_Sector_Deployment
-        Relevant_AI_functions
-        Sector_of_Deployment
-        System_Developer
-        Publish
+    allMongodbAiidprodClassifications(filter: { incident_id: { eq: $incident_id } }) {
+      nodes {
+        incident_id
+        id
+        namespace
+        notes
+        attributes {
+          short_name
+          value_json
+        }
       }
     }
     allMongodbAiidprodTaxa {

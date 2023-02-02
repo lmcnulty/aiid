@@ -512,19 +512,14 @@ export const query = graphql`
         weight
         description
         field_list {
-          short_name
-          long_name
-          short_description
-          long_description
-          display_type
-          mongo_type
-          default
-          placeholder
-          permitted_values
-          weight
-          instant_facet
-          required
           public
+          display_type
+          long_name
+          short_name
+          long_description
+          weight
+          short_description
+          render_as
         }
       }
     }

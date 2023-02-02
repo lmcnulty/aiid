@@ -137,7 +137,7 @@ const Taxonomy = ({
           </>
         )}
         <TaxonomyForm
-          taxonomy={taxonomy}
+          namespace={taxonomy.namespace}
           incidentId={incidentId}
           onSubmit={handleSubmit}
           active={taxonomyBeingEdited == taxonomy}

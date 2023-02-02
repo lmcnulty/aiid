@@ -9,7 +9,7 @@
             },
             "write": true,
             "insert": true,
-            "delete": false,
+            "delete": true,
             "search": true,
             "additional_fields": {}
         },
@@ -20,7 +20,7 @@
             },
             "write": true,
             "insert": true,
-            "delete": false,
+            "delete": true,
             "search": true,
             "additional_fields": {}
         },
@@ -31,7 +31,7 @@
             },
             "write": true,
             "insert": true,
-            "delete": false,
+            "delete": true,
             "search": true,
             "additional_fields": {}
         },
@@ -39,9 +39,9 @@
             "name": "default",
             "apply_when": {},
             "read": true,
-            "write": false,
-            "insert": false,
-            "delete": false,
+            "write": true,
+            "insert": true,
+            "delete": true,
             "search": true,
             "additional_fields": {}
         }

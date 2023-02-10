@@ -56,7 +56,11 @@ describe('The Discover app', () => {
   it('Filters by incident Id using card button', { retries: { runMode: 4 } }, () => {
     cy.visit(url);
 
+    cy.waitForStableDOM();
+
     cy.get('[data-cy=expand-filters]').click();
+
+    cy.waitForStableDOM();
 
     cy.get('div[class^="tw-hits-container"]')
       .children()
@@ -179,5 +183,25 @@ describe('The Discover app', () => {
     cy.contains('li', /^Incident Reports$/).click();
 
     cy.contains('button', 'Clear Filter').should('be.disabled');
+  });
+
+  it('Should display incidents instead of reports when selection Incidents view', () => {
+    cy.visit(url);
+
+    cy.contains('[data-cy="display-options"]', 'Incidents').click();
+
+    cy.contains('li', /^Incidents$/).click();
+
+    cy.location('search', { timeout: 8000 }).should('contain', 'is_incident_report=true');
+    cy.location('search', { timeout: 8000 }).should('contain', 'hideDuplicates=1');
+  });
+
+  it('Should not add a trailing slash when loading the discover app', () => {
+    cy.visit(url);
+
+    cy.location('search', { timeout: 8000 }).should(
+      'equal',
+      '?display=details&is_incident_report=true&page=1'
+    );
   });
 });

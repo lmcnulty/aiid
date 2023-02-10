@@ -20,7 +20,7 @@ const ReportList = ({ items }) => {
 
 const IncidentList = ({ incidents }) => {
   return (
-    <>
+    <div data-cy="incident-list">
       {incidents.map((incident) => (
         <div key={incident.incident_id} data-cy={`incident-${incident.incident_id}`}>
           <h2>
@@ -39,7 +39,7 @@ const IncidentList = ({ incidents }) => {
           <ReportList items={incident.reports} />
         </div>
       ))}
-    </>
+    </div>
   );
 };
 
@@ -58,7 +58,7 @@ export default function Incidents({ data, ...props }) {
 
   return (
     <Layout {...props}>
-      <AiidHelmet canonicalUrl={'/summaries/incidents'}>
+      <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>

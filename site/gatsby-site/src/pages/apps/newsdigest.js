@@ -14,7 +14,6 @@ import {
   faBolt,
 } from '@fortawesome/free-solid-svg-icons';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { useUserContext } from 'contexts/userContext';
 import CardSkeleton from 'elements/Skeletons/Card';
 
@@ -158,12 +157,12 @@ export default function NewsSearchPage(props) {
   const title = t('Related News Digest');
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>{title}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">
+        <h1>
           <Trans>{title}</Trans>
         </h1>
       </div>
@@ -233,7 +232,7 @@ export default function NewsSearchPage(props) {
           </div>
         </details>
       )}
-    </Layout>
+    </>
   );
 }
 

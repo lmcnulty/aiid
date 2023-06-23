@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import ReactWordcloud from 'react-d3-cloud';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import Wordlist from '../components/WordList';
 import { Trans } from 'react-i18next';
@@ -32,12 +31,12 @@ const WordCounts = ({ pageContext, ...props }) => {
   const { wordClouds, wordCountsSorted, wordsPerCloud } = pageContext;
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Word Counts</title>
       </AiidHelmet>
       <div className="titleWrapper">
-        <h1 className="font-karla font-bold flex-1 pt-0">Word Counts</h1>
+        <h1>Word Counts</h1>
       </div>
       <div className="styled-main-wrapper">
         <p className="paragraph">
@@ -57,14 +56,17 @@ const WordCounts = ({ pageContext, ...props }) => {
               wordClouds.map((wordCloud, idx) => (
                 <WordCloudCell
                   key={`wordcloud-${idx}`}
-                  wordCountsSorted={wordCountsSorted.slice(0, (idx + 1) * wordsPerCloud)}
+                  wordCountsSorted={wordCountsSorted.slice(
+                    idx * wordsPerCloud,
+                    idx * wordsPerCloud - 1 + wordsPerCloud
+                  )}
                   wordCloud={wordCloud}
                 />
               ))}
           </ul>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -3,7 +3,6 @@ import { CloudinaryImage } from '@cloudinary/base';
 import { useLocalization } from 'plugins/gatsby-theme-i18n';
 import { graphql } from 'gatsby';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import { getTranslatedReports, sortIncidentsByDatePublished } from 'utils/cite';
 import { computeEntities, RESPONSE_TAG } from 'utils/entities';
 import config from '../../config';
@@ -19,6 +18,7 @@ function CitePage(props) {
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      publications,
     },
     data: {
       allMongodbAiidprodTaxa,
@@ -91,11 +91,10 @@ function CitePage(props) {
   });
 
   return (
-    <Layout {...{ props }} location={props.location}>
+    <div {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname, metaImage }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
-
       {isLiveData ? (
         <CiteDynamicTemplate
           allMongodbAiidprodTaxa={allMongodbAiidprodTaxa}
@@ -107,6 +106,7 @@ function CitePage(props) {
           editor_dissimilar_incidents={editor_dissimilar_incidents}
           locationPathName={props.location.pathname}
           setIsLiveData={setIsLiveData}
+          publications={publications}
         />
       ) : (
         <CiteTemplate
@@ -125,9 +125,10 @@ function CitePage(props) {
           editor_similar_incidents={editor_similar_incidents}
           editor_dissimilar_incidents={editor_dissimilar_incidents}
           setIsLiveData={setIsLiveData}
+          publications={publications}
         />
       )}
-    </Layout>
+    </div>
   );
 }
 
@@ -253,7 +254,9 @@ export const query = graphql`
     }
     incident: mongodbAiidprodIncidents(incident_id: { eq: $incident_id }) {
       incident_id
-      reports
+      reports {
+        report_number
+      }
       title
       description
       date
@@ -262,6 +265,7 @@ export const query = graphql`
       Alleged_developer_of_AI_system
       Alleged_deployer_of_AI_system
       Alleged_harmed_or_nearly_harmed_parties
+      editor_notes
     }
 
     entities: allMongodbAiidprodEntities {

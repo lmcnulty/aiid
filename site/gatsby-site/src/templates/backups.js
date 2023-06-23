@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
 import Container from 'elements/Container';
@@ -16,12 +15,12 @@ const Backups = ({ pageContext, ...props }) => {
   }
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Database Backups and Snapshots</title>
       </AiidHelmet>
       <div className="titleWrapper">
-        <h1 className="font-karla font-bold flex-1 pt-0">Database Snapshots</h1>
+        <h1>Database Snapshots</h1>
       </div>
       <div className="styled-main-wrapper">
         <h2>Citing the Database as a Whole</h2>
@@ -77,7 +76,7 @@ const Backups = ({ pageContext, ...props }) => {
           </Row>
         </Container>
       </div>
-    </Layout>
+    </>
   );
 };
 

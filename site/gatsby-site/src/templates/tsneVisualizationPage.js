@@ -1,6 +1,5 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
-import Layout from 'components/Layout';
 import TsneVisualization from 'components/cite/TsneVisualization';
 import { Trans, useTranslation } from 'react-i18next';
 import { LocalizedLink } from 'plugins/gatsby-theme-i18n';
@@ -21,13 +20,13 @@ function TsneVisulizationPage(props) {
   const metaDescription = t('Spatial Visualization');
 
   return (
-    <Layout className="max-w-full w-full" {...props}>
+    <div className="max-w-full w-full" {...props}>
       <AiidHelmet {...{ metaTitle, metaDescription, path: props.location.pathname }}>
         <meta property="og:type" content="website" />
       </AiidHelmet>
 
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">{t(metaDescription)}</h1>
+        <h1>{t(metaDescription)}</h1>
       </div>
 
       <TsneVisualization
@@ -54,7 +53,7 @@ function TsneVisulizationPage(props) {
           .
         </Trans>
       </p>
-    </Layout>
+    </div>
   );
 }
 

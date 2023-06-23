@@ -5,13 +5,15 @@ const { switchLocalizedPath } = require('../i18n');
 const createCitationPages = async (graphql, createPage, { languages }) => {
   const result = await graphql(
     `
-      query IncidentIDs {
+      query ContextData {
         allMongodbAiidprodIncidents {
           nodes {
             incident_id
             title
             date
-            reports
+            reports {
+              report_number
+            }
             editor_similar_incidents
             editor_dissimilar_incidents
             flagged_dissimilar_incidents
@@ -30,20 +32,33 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
             language
             image_url
             cloudinary_id
+            source_domain
+          }
+        }
+
+        allMongodbAiidprodPublications {
+          nodes {
+            title
+            domain
+            bias_labels {
+              label
+              labeler
+            }
           }
         }
       }
     `
   );
 
-  const { allMongodbAiidprodIncidents, allMongodbAiidprodReports } = result.data;
+  const { allMongodbAiidprodIncidents, allMongodbAiidprodReports, allMongodbAiidprodPublications } =
+    result.data;
 
   // Incident reports list
   const incidentReportsMap = {};
 
   for (const incident of allMongodbAiidprodIncidents.nodes) {
     incidentReportsMap[incident.incident_id] = incident.reports
-      .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r))
+      .map((r) => allMongodbAiidprodReports.nodes.find((n) => n.report_number === r.report_number))
       .map((r) => ({ ...r }));
   }
 
@@ -78,15 +93,20 @@ const createCitationPages = async (graphql, createPage, { languages }) => {
       reports: incidentReportsMap[incident_id],
     }));
 
+    const publications = allMongodbAiidprodPublications.nodes.filter((publication) =>
+      incidentReportsMap[incident_id].some((report) => report.source_domain == publication.domain)
+    );
+
     pageContexts.push({
       incident,
       incident_id,
-      report_numbers: incident.reports,
+      report_numbers: incident.reports.map((r) => r.report_number),
       nextIncident: i < keys.length - 1 ? keys[i + 1] : null,
       prevIncident: i > 0 ? keys[i - 1] : null,
       nlp_similar_incidents,
       editor_similar_incidents,
       editor_dissimilar_incidents,
+      publications,
     });
   }
 

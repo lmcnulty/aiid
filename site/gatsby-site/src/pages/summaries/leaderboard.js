@@ -1,7 +1,6 @@
 import React from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import SubmittersLeaderboard from 'components/leaderboards/SubmittersLeaderboard';
 import AuthorsLeaderboard from 'components/leaderboards/AuthorsLeaderboard';
@@ -12,12 +11,12 @@ import { Trans } from 'react-i18next';
 
 export default function Authors(props) {
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Submissions Leaderboard</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">Leaderboard</h1>
+        <h1>Leaderboard</h1>
       </div>
       <div className="styled-main-wrapper max-w-full">
         <p className="paragraph">
@@ -35,6 +34,6 @@ export default function Authors(props) {
           <DomainsLeaderboard />
         </div>
       </div>
-    </Layout>
+    </>
   );
 }

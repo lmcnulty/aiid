@@ -5,7 +5,6 @@ import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTable, useFilters, usePagination, useSortBy } from 'react-table';
 import { gql, useQuery } from '@apollo/client';
-import Layout from 'components/Layout';
 import { useMenuContext } from 'contexts/MenuContext';
 import ListSkeleton from 'elements/Skeletons/List';
 import { useTranslation } from 'react-i18next';
@@ -204,7 +203,7 @@ export default function Incidents(props) {
   const { isCollapsed } = useMenuContext();
 
   return (
-    <Layout {...props} sidebarCollapsed={true}>
+    <div {...props}>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
@@ -216,13 +215,13 @@ export default function Incidents(props) {
             isCollapsed ? 'max-w-[100vw] md:pl-14' : 'md:pl-4'
           }`}
         >
-          <h1 className="font-karla font-bold flex-1 pt-0">Incident Report Table</h1>
+          <h1>Incident Report Table</h1>
           <Button onClick={() => table.setAllFilters([])}>Reset filters</Button>
           <div className="py-4 pr-4 pl-0">
             <Table table={table} />
           </div>
         </div>
       )}
-    </Layout>
+    </div>
   );
 }

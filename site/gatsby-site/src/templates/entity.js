@@ -1,6 +1,5 @@
 import EntityCard from 'components/entities/EntityCard';
 import IncidentCard from 'components/incidents/IncidentCard';
-import Layout from 'components/Layout';
 import Link from 'components/ui/Link';
 import { useUserContext } from 'contexts/userContext';
 import { Button, Spinner } from 'flowbite-react';
@@ -211,15 +210,15 @@ const EntityPage = ({ pageContext, data, ...props }) => {
   };
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet metaTitle={'Entity: ' + name} path={props.location.pathname} />
       <div className="titleWrapper">
         <LocalizedLink to="/entities" className="text-lg">
           <Trans ns="entities">Entities</Trans>
         </LocalizedLink>
-        <div className="flex items-center flex-wrap w-full">
-          <h1 className="text-3xl leading-6 font-medium flex-1 mt-0 pt-0">{name}</h1>
-          <div className="flex items-center my-2">
+        <div className="w-full flex flex-wrap items-center justify-between">
+          <h1>{name}</h1>
+          <div className="flex items-center -mt-1">
             {loadingSubscription && subscriptionNetworkStatus === NetworkStatus.loading ? (
               <Spinner size="sm" />
             ) : subscriptions?.subscriptions.length > 0 ? (
@@ -286,7 +285,7 @@ const EntityPage = ({ pageContext, data, ...props }) => {
           </div>
         </>
       )}
-    </Layout>
+    </>
   );
 };
 
@@ -359,7 +358,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -374,7 +375,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -389,7 +392,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system
@@ -404,7 +409,9 @@ export const query = graphql`
         title
         description
         incident_id
-        reports
+        reports {
+          report_number
+        }
         date
         Alleged_deployer_of_AI_system
         Alleged_developer_of_AI_system

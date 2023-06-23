@@ -4,7 +4,6 @@ import { ObjectId } from 'bson';
 import { useMutation, useQuery } from '@apollo/client';
 import { DELETE_QUICKADD, FIND_QUICKADD } from '../../graphql/quickadd.js';
 import { useUserContext } from '../../contexts/userContext';
-import Layout from '../../components/Layout';
 import SubmissionList from '../../components/submissions/SubmissionList';
 import useToastContext, { SEVERITY } from '../../hooks/useToast';
 import { Trans, useTranslation } from 'react-i18next';
@@ -79,12 +78,12 @@ const SubmittedIncidentsPage = ({ ...props }) => {
   });
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>{t('Submitted Incident Report List')}</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">
+        <h1>
           <Trans ns="submitted">Submitted Incident Report List</Trans>
         </h1>
       </div>
@@ -152,7 +151,7 @@ const SubmittedIncidentsPage = ({ ...props }) => {
           </ListGroup>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import AiidHelmet from 'components/AiidHelmet';
 import { graphql } from 'gatsby';
-import Layout from 'components/Layout';
 
 const ReportList = ({ report }) => (
   <dl data-cy="report" className="my-4 grid grid-cols-1 md:grid-cols-2 border-2 rounded">
@@ -62,12 +61,12 @@ export default function FlaggedIncidents({ data, ...props }) {
     });
 
   return (
-    <Layout {...props}>
+    <>
       <AiidHelmet path={props.location.pathname}>
         <title>Incident List</title>
       </AiidHelmet>
       <div className={'titleWrapper'}>
-        <h1 className="font-karla font-bold flex-1 pt-0">Flagged Incident List</h1>
+        <h1>Flagged Incident List</h1>
       </div>
       <div className="styled-main-wrapper">
         <p className="paragraph">
@@ -76,7 +75,7 @@ export default function FlaggedIncidents({ data, ...props }) {
         </p>
         <IncidentList incidents={incidents} />
       </div>
-    </Layout>
+    </>
   );
 }
 
@@ -87,7 +86,9 @@ export const pageQuery = graphql`
         incident_id
         title
         date
-        reports
+        reports {
+          report_number
+        }
       }
     }
     allMongodbAiidprodReports(filter: { flag: { eq: true } }) {

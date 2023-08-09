@@ -498,22 +498,6 @@
         @apply text-center;
     }
 
-    .tw-hits-container {
-        @apply grid grid-cols-1 min-576px:grid-cols-2 md:grid-cols-3 min-992px:grid-cols-4 gap-1.5;
-    }
-
-    .tw-hits-container.details {
-        @apply grid md:grid-cols-4 gap-2;
-    }
-
-    .tw-hits-container.compact {
-        @apply grid md:grid-cols-4 gap-2;
-    }
-
-    .tw-hits-container.list {
-        @apply grid grid-cols-1 gap-2;
-    }
-
     /* TAILWIND AIS PAGINATION START */
 
     .tw-ais-pagination {
@@ -614,7 +598,7 @@
   }
 
   .Typeahead input {
-    @apply text-sm leading-5 bg-gray-50 pt-2.5 pr-2.5 pb-2.5 border !important;
+    @apply text-sm leading-5 pt-2.5 pr-2.5 pb-2.5 border !important;
   }
 
   .Typeahead .rbt-menu.dropdown-menu {

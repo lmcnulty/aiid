@@ -397,7 +397,23 @@ function GroupBarChart({
 
   const groupNames = Object.keys(groups);
 
+  const max = (list) => list.reduce((m, e) => Math.max(m, e), 0);
+
+  const sum = (list) => list.reduce((s, e) => s + e, 0);
+
+  const groupSizes = groupNames.map((groupName) =>
+    sum(Object.values(groups[groupName].valuesCount))
+  );
+
+  const largestGroupSize = max(groupSizes);
+
   const autonomySort = (a, b) => Number(a.id[8] || 0) - Number(b.id[8] || 0);
+
+  const stepMultiple = 5; // Stepsize should be a multiple of this
+
+  const stepCount = 10;
+
+  const stepSize = Math.floor(largestGroupSize / stepCount / stepMultiple) * stepMultiple;
 
   const options = {
     data: {
@@ -422,21 +438,40 @@ function GroupBarChart({
       },
     },
     axis: {
+      y: { tick: { stepSize } },
+      y2: {
+        show: false,
+      },
       x: {
         type: 'category',
         height: 40,
         tick: {
           tooltip: true,
+          stepSize: 10,
         },
       },
     },
     tooltip: {
       show: false,
     },
+    grid: {
+      y: {
+        lines: Array(stepCount / 2 + 1)
+          .fill()
+          .map((_, i) => ({
+            value: (i + 1) * 2 * stepSize,
+            position: 'start',
+          })),
+      },
+    },
   };
 
   return (
-    <div className={`${className || ''}`}>
+    <div
+      className={`${
+        className || ''
+      } max-w-3xl [&_.bb-ygrid-line>line]:stroke-gray-300 [&_.bb-ygrid-line>line]:stroke-1`}
+    >
       <h2 className="text-center">{titleDescription}</h2>
       {subtitle && <>{subtitle}</>}
       <div className="text-center">
@@ -444,7 +479,7 @@ function GroupBarChart({
         (by Incident Count)
       </div>
       <BillboardJS bb={bb} options={{ ...options }} />
-      <div className="flex gap-2 flex-wrap justify-around">
+      <div className="flex gap-2 flex-wrap justify-around max-w-full">
         {allValues.length > 5 &&
           groupNames.map((groupName) => {
             const byGroupOccurences = (a, b) =>

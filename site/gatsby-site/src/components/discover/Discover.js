@@ -18,6 +18,13 @@ import { history } from 'instantsearch.js/es/lib/routers';
 import Pagination from './Pagination';
 import debounce from 'lodash/debounce';
 
+import REFINEMENT_LISTS, { FIRST_ROW } from 'components/discover/REFINEMENT_LISTS';
+import Filter from './Filter';
+import ClearFilters from './ClearFilters';
+
+import { AccordionFilter } from './Filter';
+import { Accordion, Modal } from 'flowbite-react';
+
 const searchClient = algoliasearch(
   config.header.search.algoliaAppId,
   config.header.search.algoliaSearchKey
@@ -57,6 +64,14 @@ export default function Discover() {
     return null;
   }
 
+  const modalControls = width <= 767;
+  const toolbarFilters = 767 < width && width < 1920; 
+  const sidebarFilters = 1920 <= width
+
+  console.log(`modalControls`, modalControls);
+  console.log(`toolbarFilters`, toolbarFilters);
+  console.log(`sidebarFilters`, sidebarFilters);
+
   return (
     <InstantSearch
       searchClient={searchClient}
@@ -78,18 +93,30 @@ export default function Discover() {
         stateMapping: mapping(),
       }}
     >
-      <Container className="ml-auto mr-auto w-full lg:max-w-6xl xl:max-w-7xl mt-6">
-        <Row className="px-0 mx-0">
-          <Col className="px-0 mx-0">
-            <SearchBox />
-          </Col>
-        </Row>
+      <Container className="flex max-w-full">
+        <div style={{ 'width': sidebarFilters ? 'calc(100% - 16rem)' : '100%'}}>
+          <Row className="px-0 mx-0">
+            <Col className="px-0 mx-0">
+              <SearchBox />
+            </Col>
+          </Row>
 
-        {width > 767 ? <Controls /> : <OptionsModal />}
+          {modalControls 
+            ? <OptionsModal /> 
+            : <Controls {...{ toolbarFilters }} />
+          }
 
-        <Hits />
+          <Hits />
 
-        <Pagination />
+          <Pagination />
+        </div>
+        <aside className="w-[16rem] absolute pr-4 right-0 top-4 hidden 3xl:block">
+          <Accordion>
+            {REFINEMENT_LISTS.filter((list) => !list.hidden).map((list) => (
+              <AccordionFilter key={list.attribute} attribute={list.attribute} {...list} />
+            ))}
+          </Accordion>
+        </aside>
       </Container>
     </InstantSearch>
   );

@@ -9,6 +9,7 @@ import { useInstantSearch } from 'react-instantsearch';
 const Controls = () => {
   const { indexUiState } = useInstantSearch();
 
+  console.log(`indexUiState`, indexUiState);
   return (
     <>
       <div className="justify-between gap-2 mt-4 flex flex-wrap items-center">
@@ -31,7 +32,7 @@ const Controls = () => {
           <div className="grid place-content-center"></div>
         </div>
       </div>
-      <div className={'mb-3 invisible h-0 md:visible h-auto'}>
+      <div className={'mb-3 invisible h-0 md:visible h-auto 3xl:hidden'}>
         <Filters {...{ indexUiState }} />
       </div>
     </>
